@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grupo MUTA — El evento empieza acá</title>
+<meta name="description" content="Grupo MUTA crea experiencias para celebrar: espacio propio, producción técnica, infraestructura y servicio de barra, dentro o fuera de MUTA Club.">
+<meta name="theme-color" content="#050406">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23050406'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='Arial' font-size='30' font-weight='700' fill='white'%3EM%3C/text%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Grupo MUTA — Creamos experiencias para celebrar">
+<meta property="og:description" content="Espacio, producción y barra para crear eventos a medida. Rosario.">
+<meta property="og:image" content="assets/img/salon-azul.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400..700&family=Chivo+Mono:wght@300;400;500&family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#unidades">Saltar al contenido</a>
+
+<!-- Textura y luz que acompañan al cursor -->
+<div class="grain" aria-hidden="true"></div>
+<div class="spot" id="spot" aria-hidden="true"></div>
+
+<!-- ================= BARRA (no fija: se va con el scroll) ================= -->
+<header class="top">
+  <a class="badge" href="#inicio" aria-label="Grupo MUTA, inicio">
+    <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true">
+      <circle cx="32" cy="32" r="30.2" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+      <text x="32" y="30" text-anchor="middle" font-family="Roboto Flex, sans-serif" font-size="15" font-weight="800" letter-spacing="1" fill="currentColor">MUTA</text>
+      <circle cx="32" cy="42.5" r="7.4" fill="none" stroke="currentColor" stroke-width="1" opacity=".75"/>
+      <text x="32" y="46" text-anchor="middle" font-family="Roboto Flex, sans-serif" font-size="9" font-weight="700" fill="currentColor">M</text>
+    </svg>
+    <span>Grupo<br>MUTA</span>
+  </a>
+
+  <div class="top__right">
+    <a class="lnk" href="#armar">Armá tu evento</a>
+    <button class="mbtn" data-menu-open aria-expanded="false" aria-controls="menu">
+      <span class="ham" aria-hidden="true"><i></i><i></i><i></i></span><span>Menú</span>
+    </button>
+  </div>
+</header>
+
+<button class="mbtn mbtn--float" id="mbtnFloat" data-menu-open aria-expanded="false" aria-controls="menu">
+  <span class="ham" aria-hidden="true"><i></i><i></i><i></i></span><span>Menú</span>
+</button>
+
+<!-- ================= MENÚ ================= -->
+<div class="menu" id="menu" hidden>
+  <div class="menu__bar">
+    <span class="cue">Grupo MUTA</span>
+    <button class="mbtn" data-menu-close><span class="ham ham--x" aria-hidden="true"><i></i><i></i></span><span>Cerrar</span></button>
+  </div>
+  <nav class="menu__nav" aria-label="Secciones">
+    <a href="#unidades" style="--cue:var(--bone)"><em>01</em> Qué hacemos</a>
+    <a href="#club" style="--cue:var(--magenta)"><em>02</em> MUTA Club</a>
+    <a href="#eventos" style="--cue:var(--blue)"><em>03</em> MUTA Eventos</a>
+    <a href="#barra" style="--cue:var(--champ)"><em>04</em> MUTA Barra</a>
+    <a href="#galeria" style="--cue:var(--bone)"><em>05</em> Galería</a>
+    <a href="#armar" style="--cue:var(--magenta)"><em>06</em> Armá tu evento</a>
+  </nav>
+  <div class="menu__foot">
+    <a href="#" data-cfg="wa">WhatsApp</a>
+    <a href="#" data-cfg="ig">Instagram</a>
+    <a href="#" data-cfg="maps">Cómo llegar</a>
+    <a href="#" data-cfg="mail">Email</a>
+  </div>
+</div>
+
+<main id="inicio">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero__media" aria-hidden="true">
+      <img src="assets/img/salon-azul.jpg" alt="" width="1170" height="771" fetchpriority="high">
+    </div>
+    <canvas class="hero__canvas" id="lights" aria-hidden="true"></canvas>
+    <div class="hero__veil" aria-hidden="true"></div>
+
+    <div class="hero__in">
+      <p class="cue cue--in">Rosario · Espacio propio y servicios para eventos</p>
+      <h1 class="hero__t">Creamos<br><em>experiencias</em><br>para celebrar</h1>
+      <p class="hero__s cue--in">
+        Espacio propio, producción técnica, infraestructura y servicio de barra.
+        Elegí dónde querés celebrar: nosotros resolvemos el resto.
+      </p>
+      <div class="hero__cta cue--in">
+        <a class="btn btn--solid" href="#armar">Armá tu evento</a>
+        <a class="btn" href="#unidades">Ver qué hacemos</a>
+      </div>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__row">
+        <span>Salón propio</span><b>·</b><span>Sonido</span><b>·</b><span>Iluminación</span><b>·</b>
+        <span>DJ</span><b>·</b><span>Pantallas</span><b>·</b><span>Escenarios</span><b>·</b>
+        <span>Mobiliario</span><b>·</b><span>Carpas</span><b>·</b><span>Baños químicos</span><b>·</b>
+        <span>Barra móvil</span><b>·</b><span>Coctelería</span><b>·</b><span>Party planner</span><b>·</b>
+        <span>Salón propio</span><b>·</b><span>Sonido</span><b>·</b><span>Iluminación</span><b>·</b>
+        <span>DJ</span><b>·</b><span>Pantallas</span><b>·</b><span>Escenarios</span><b>·</b>
+        <span>Mobiliario</span><b>·</b><span>Carpas</span><b>·</b><span>Baños químicos</span><b>·</b>
+        <span>Barra móvil</span><b>·</b><span>Coctelería</span><b>·</b><span>Party planner</span><b>·</b>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MANIFIESTO + UNIDADES ================= -->
+  <section class="sec" id="unidades">
+    <div class="wrap">
+      <p class="cue rv">01 — Qué hacemos</p>
+      <h2 class="stmt rv">
+        No somos un boliche que además<br>alquila el lugar. Somos <em>tres unidades</em><br>que resuelven un evento entero.
+      </h2>
+      <p class="lead rv">
+        Una sola marca madre y tres negocios complementarios. Se contratan por separado
+        o combinados, dentro del salón o donde vos digas.
+      </p>
+    </div>
+
+    <ul class="index">
+      <li class="idx rv" style="--cue:var(--magenta)">
+        <a href="#club" data-peek="assets/img/club-rojo.jpg">
+          <span class="idx__n">01</span>
+          <span class="idx__t">MUTA Club</span>
+          <span class="idx__d">El salón. Noches de club, fiestas privadas y eventos organizados.</span>
+          <span class="idx__w">Dentro del salón</span>
+          <span class="idx__go" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li class="idx rv" style="--cue:var(--blue)">
+        <a href="#eventos" data-peek="assets/img/pantallas.jpg">
+          <span class="idx__n">02</span>
+          <span class="idx__t">MUTA Eventos</span>
+          <span class="idx__d">Producción técnica e infraestructura: sonido, luces, DJ, mobiliario, carpas.</span>
+          <span class="idx__w">Dentro y fuera</span>
+          <span class="idx__go" aria-hidden="true">→</span>
+        </a>
+      </li>
+      <li class="idx rv" style="--cue:var(--champ)">
+        <a href="#barra" data-peek="assets/img/lounge.jpg">
+          <span class="idx__n">03</span>
+          <span class="idx__t">MUTA Barra</span>
+          <span class="idx__d">Bebidas, coctelería y personal de barra en la modalidad que convenga.</span>
+          <span class="idx__w">Dentro y fuera</span>
+          <span class="idx__go" aria-hidden="true">→</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ================= 02 · MUTA CLUB ================= -->
+  <section class="sec sec--cue" id="club" style="--cue:var(--magenta)">
+    <div class="wrap">
+      <header class="shead">
+        <p class="cue rv">02 — El espacio</p>
+        <h2 class="big rv">MUTA<br>Club</h2>
+        <p class="lead rv">
+          Pista, barra, recepción, entrepiso y patio. Acá siguen las noches de club y acá
+          se organizan las fiestas privadas, los cumpleaños y los eventos de empresa.
+        </p>
+      </header>
+    </div>
+
+    <figure class="shot shot--feature rv" data-parallax>
+      <img src="assets/img/salon-cena.jpg" alt="Salón de MUTA preparado para una cena y celebración" width="1170" height="759" loading="lazy">
+      <figcaption>Una puesta distinta para cada evento</figcaption>
+    </figure>
+
+    <div class="wrap">
+      <ul class="chips rv">
+        <li>Cumpleaños de 15</li><li>30 · 40 · 50 · 60</li><li>Casamientos</li>
+        <li>Despedidas</li><li>Recibidas y egresos</li><li>Fiestas privadas</li>
+        <li>After office</li><li>Cierre de año</li><li>Lanzamientos</li><li>Capacitaciones</li>
+      </ul>
+
+      <!-- Consola de niveles -->
+      <div class="consola rv">
+        <div class="consola__head">
+          <p class="cue">Tres formas de contratarlo</p>
+          <h3>Subí el nivel<br>y mirá qué se prende.</h3>
+          <div class="lvls" role="tablist" aria-label="Niveles de contratación">
+            <button role="tab" id="tab-1" aria-controls="feats" aria-selected="true" data-lvl="1">
+              <b>Base</b><span>Nivel 1</span>
+            </button>
+            <button role="tab" id="tab-2" aria-controls="feats" aria-selected="false" data-lvl="2">
+              <b>Producción</b><span>Nivel 2</span>
+            </button>
+            <button role="tab" id="tab-3" aria-controls="feats" aria-selected="false" data-lvl="3">
+              <b>Experiencia</b><span>Nivel 3</span>
+            </button>
+          </div>
+          <p class="consola__d" id="lvlDesc">
+            El espacio en exclusiva durante el horario contratado, listo para que armes tu evento.
+          </p>
+        </div>
+
+        <ul class="feats" id="feats" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+          <li data-min="1">Uso exclusivo del salón en el horario contratado</li>
+          <li data-min="1">Mobiliario base y sectores definidos: pista, barra, recepción y patio</li>
+          <li data-min="1">Sonido e iluminación básicos, sin operador</li>
+          <li data-min="1">Responsable de MUTA durante todo el evento</li>
+          <li data-min="1">Limpieza y condiciones del espacio</li>
+          <li data-min="2">DJ y musicalización</li>
+          <li data-min="2">Sonido e iluminación con operador técnico</li>
+          <li data-min="2">Servicio de barra en la modalidad a convenir</li>
+          <li data-min="2">Servicio de tapeo a convenir</li>
+          <li data-min="3">Coordinación integral a cargo de una party planner</li>
+          <li data-min="3">Diseño de la propuesta: ambientación, recorrido y momentos clave</li>
+          <li data-min="3">Acompañamiento antes y durante el evento</li>
+        </ul>
+      </div>
+
+      <p class="note rv">
+        Cada nivel incluye todo el anterior. Se cotiza según fecha, duración y cantidad de invitados.
+        <a href="#armar">Armá tu evento</a> y te pasamos la propuesta.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 03 · MUTA EVENTOS ================= -->
+  <section class="sec sec--cue" id="eventos" style="--cue:var(--blue)">
+    <div class="wrap">
+      <header class="shead">
+        <p class="cue rv">03 — Producción e infraestructura</p>
+        <h2 class="big rv">MUTA<br>Eventos</h2>
+        <p class="lead rv">
+          Trabajamos en quintas, casas, salones, clubes, empresas y espacios de terceros.
+          Se contrata completo o por componentes: una empresa puede llevar solo sonido,
+          micrófonos y luces; una fiesta en quinta, solo la pantalla.
+        </p>
+      </header>
+
+      <div class="ramas">
+        <div class="rama rv">
+          <p class="cue">Rama A</p>
+          <h3>Producción técnica<br>y ambientación</h3>
+          <ul class="listado">
+            <li>Sonido para pista y para vivo</li>
+            <li>Iluminación de pista y de escenario</li>
+            <li>DJ y musicalización</li>
+            <li>Micrófonos, pantallas y proyección</li>
+            <li>Estructuras de iluminación y efectos visuales</li>
+            <li>Ambientación técnica</li>
+            <li>Escenario o tarima, montaje y desmontaje</li>
+            <li>Operador técnico y coordinación durante el evento</li>
+          </ul>
+        </div>
+        <div class="rama rv">
+          <p class="cue">Rama B</p>
+          <h3>Infraestructura,<br>mobiliario y alquileres</h3>
+          <ul class="listado">
+            <li>Mesas, sillas y banquetas</li>
+            <li>Livings</li>
+            <li>Barras móviles</li>
+            <li>Vajilla</li>
+            <li>Escenarios y tarimas</li>
+            <li>Carpas y estructuras</li>
+            <li>Baños químicos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <figure class="shot shot--split rv" data-parallax>
+      <img src="assets/img/pista.jpg" alt="Pista de MUTA con público, humo e iluminación escénica" width="1170" height="736" loading="lazy">
+      <figcaption>Sonido, luces y energía en escena</figcaption>
+    </figure>
+  </section>
+
+  <!-- ================= 04 · MUTA BARRA ================= -->
+  <section class="sec sec--cue" id="barra" style="--cue:var(--champ)">
+    <div class="wrap">
+      <header class="shead">
+        <p class="cue rv">04 — Bebidas y coctelería</p>
+        <h2 class="big rv">MUTA<br>Barra</h2>
+        <p class="lead rv">
+          En MUTA Club, en eventos producidos por MUTA Eventos o en eventos totalmente
+          externos. No imponemos paquetes rígidos: diseñamos la barra según el cliente,
+          el presupuesto y el público.
+        </p>
+      </header>
+
+      <div class="barra">
+        <div class="barra__incl rv">
+          <p class="cue">Qué incluye</p>
+          <ul class="listado">
+            <li>Bartenders y personal de barra</li>
+            <li>Barra móvil</li>
+            <li>Tragos clásicos y de autor</li>
+            <li>Bebidas sin alcohol</li>
+            <li>Hielo</li>
+            <li>Cristalería o descartables</li>
+            <li>Montaje y desmontaje</li>
+          </ul>
+        </div>
+
+        <div class="barra__mods rv">
+          <p class="cue">Modalidades de servicio</p>
+          <div class="acc" id="acc">
+            <details name="mod" open>
+              <summary><span>Barra libre por horas</span></summary>
+              <p>Precio por persona y por una duración definida. La opción más simple de calcular para el cliente.</p>
+            </details>
+            <details name="mod">
+              <summary><span>Barra por consumo</span></summary>
+              <p>Se cobra lo consumido durante el evento. Conviene cuando no se sabe bien cuánto va a tomar el grupo.</p>
+            </details>
+            <details name="mod">
+              <summary><span>Vouchers</span></summary>
+              <p>Cada invitado recibe una cantidad determinada de tragos o consumiciones. Presupuesto cerrado y consumo ordenado.</p>
+            </details>
+            <details name="mod">
+              <summary><span>Barra limitada</span></summary>
+              <p>Incluye determinadas bebidas y tragos, con reglas claras desde el principio.</p>
+            </details>
+            <details name="mod">
+              <summary><span>Barra corporativa o familiar</span></summary>
+              <p>Propuesta más moderada: vino, cerveza, gaseosas, café o sin alcohol.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 · GALERÍA ================= -->
+  <section class="sec" id="galeria">
+    <div class="wrap">
+      <p class="cue rv">05 — El lugar</p>
+      <h2 class="stmt rv">Así se ve<br>una noche <em>nuestra</em>.</h2>
+    </div>
+
+    <div class="gal">
+      <figure class="shot g1 rv" data-parallax><img src="assets/img/fachada.jpg" alt="Fachada iluminada de MUTA de noche" width="1170" height="751" loading="lazy"><figcaption>La noche empieza acá</figcaption></figure>
+      <figure class="shot g2 rv"><img src="assets/img/cena-roja.jpg" alt="Salón dispuesto para una cena bajo arañas y luz roja" width="1170" height="758" loading="lazy"><figcaption>Cenas</figcaption></figure>
+      <figure class="shot g3 rv"><img src="assets/img/lounge.jpg" alt="Sector lounge de MUTA iluminado en azul" width="1170" height="774" loading="lazy"><figcaption>Lounges</figcaption></figure>
+      <figure class="shot g4 rv"><img src="assets/img/club-rojo.jpg" alt="Noche de club con pantallas y luces rojas" width="1170" height="755" loading="lazy"><figcaption>Club</figcaption></figure>
+      <figure class="shot g5 rv"><img src="assets/img/deco-globos.jpg" alt="Ambientación personalizada con globos metalizados" width="1170" height="764" loading="lazy"><figcaption>Ambientación</figcaption></figure>
+      <figure class="shot g6 rv"><img src="assets/img/mesa-luces.jpg" alt="Mesa principal decorada con flores y cortina de luces" width="1170" height="749" loading="lazy"><figcaption>Detalles</figcaption></figure>
+      <figure class="shot g7 rv" data-parallax><img src="assets/img/pantallas.jpg" alt="Salón MUTA con pantallas y visuales rojas" width="1170" height="731" loading="lazy"><figcaption>Visuales que transforman el espacio</figcaption></figure>
+    </div>
+
+    <div class="lookbook" data-native-scroll aria-label="Más momentos en MUTA">
+      <div class="lookbook__track">
+        <figure><img src="assets/img/cumple-15.jpg" alt="Ambientación de cumpleaños de 15" width="1170" height="751" loading="lazy"><figcaption>15 años</figcaption></figure>
+        <figure><img src="assets/img/salon-azul.jpg" alt="Vista general del salón iluminado en azul" width="1170" height="771" loading="lazy"><figcaption>El salón</figcaption></figure>
+        <figure><img src="assets/img/salon-cena.jpg" alt="Montaje de cena en el salón" width="1170" height="759" loading="lazy"><figcaption>Producción integral</figcaption></figure>
+        <figure><img src="assets/img/pista.jpg" alt="Pista llena durante una fiesta" width="1170" height="736" loading="lazy"><figcaption>La pista</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 · ARMÁ TU EVENTO ================= -->
+  <section class="sec sec--cue" id="armar" style="--cue:var(--magenta)">
+    <div class="wrap">
+      <header class="shead">
+        <p class="cue rv">06 — Presupuesto</p>
+        <h2 class="big rv">Armá<br>tu evento</h2>
+        <p class="lead rv">Tres pasos. Al final te lo enviamos armado por WhatsApp y te respondemos con la propuesta.</p>
+      </header>
+
+      <div class="armar rv">
+        <form class="wiz" id="wiz" novalidate>
+          <div class="wiz__bar">
+            <span class="wiz__step" id="wizStep">Paso 1 de 3</span>
+            <span class="wiz__track"><i id="wizFill"></i></span>
+          </div>
+
+          <!-- Paso 1 -->
+          <fieldset class="step is-on" data-step="1">
+            <legend>¿Qué necesitás?</legend>
+            <div class="opts" data-group="unidad">
+              <label class="opt"><input type="checkbox" name="unidad" value="El salón (MUTA Club)"><span>El salón</span></label>
+              <label class="opt"><input type="checkbox" name="unidad" value="Producción técnica"><span>Producción técnica</span></label>
+              <label class="opt"><input type="checkbox" name="unidad" value="Mobiliario e infraestructura"><span>Mobiliario e infraestructura</span></label>
+              <label class="opt"><input type="checkbox" name="unidad" value="Servicio de barra"><span>Servicio de barra</span></label>
+              <label class="opt"><input type="checkbox" name="unidad" value="Propuesta integral"><span>Todo, propuesta integral</span></label>
+            </div>
+
+            <p class="wiz__q">¿Dónde es?</p>
+            <div class="opts" data-group="lugar">
+              <label class="opt"><input type="radio" name="lugar" value="En MUTA Club"><span>En MUTA Club</span></label>
+              <label class="opt"><input type="radio" name="lugar" value="En otro lugar"><span>En otro lugar</span></label>
+              <label class="opt"><input type="radio" name="lugar" value="A definir"><span>Todavía no sé</span></label>
+            </div>
+          </fieldset>
+
+          <!-- Paso 2 -->
+          <fieldset class="step" data-step="2" hidden>
+            <legend>Contanos del evento</legend>
+            <div class="opts" data-group="tipo">
+              <label class="opt"><input type="radio" name="tipo" value="Cumpleaños de 15"><span>15</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Cumpleaños (30/40/50/60)"><span>Cumpleaños</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Casamiento"><span>Casamiento</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Despedida"><span>Despedida</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Recibida o egreso"><span>Recibida / egreso</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Fiesta privada"><span>Fiesta privada</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Evento corporativo"><span>Corporativo</span></label>
+              <label class="opt"><input type="radio" name="tipo" value="Otro"><span>Otro</span></label>
+            </div>
+
+            <div class="grid2">
+              <label class="fld">
+                <span>Fecha estimada</span>
+                <input type="date" name="fecha">
+              </label>
+              <label class="fld">
+                <span>Cantidad de invitados</span>
+                <input type="number" name="invitados" min="1" step="1" inputmode="numeric" placeholder="120">
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Paso 3 -->
+          <fieldset class="step" data-step="3" hidden>
+            <legend>¿Cómo te contactamos?</legend>
+            <div class="grid2">
+              <label class="fld">
+                <span>Nombre y apellido</span>
+                <input type="text" name="nombre" autocomplete="name" placeholder="Tu nombre">
+              </label>
+              <label class="fld">
+                <span>WhatsApp</span>
+                <input type="tel" name="tel" autocomplete="tel" placeholder="341 000 0000">
+              </label>
+            </div>
+            <label class="fld">
+              <span>Email <i>(opcional)</i></span>
+              <input type="email" name="email" autocomplete="email" placeholder="vos@mail.com">
+            </label>
+            <label class="fld">
+              <span>Algo más que quieras contarnos</span>
+              <textarea name="mensaje" rows="3" placeholder="Horario, barra libre, DJ, pantalla, ambientación…"></textarea>
+            </label>
+          </fieldset>
+
+          <div class="wiz__nav">
+            <button type="button" class="btn" id="prev" hidden>Volver</button>
+            <button type="button" class="btn btn--solid" id="next">Siguiente</button>
+            <button type="submit" class="btn btn--solid" id="send" hidden>Enviar por WhatsApp</button>
+          </div>
+          <p class="wiz__msg" id="wizMsg" role="status" aria-live="polite"></p>
+        </form>
+
+        <!-- Ficha en vivo -->
+        <aside class="ficha" aria-label="Resumen de tu pedido">
+          <p class="cue">Tu evento</p>
+          <dl>
+            <div><dt>Necesita</dt><dd data-f="unidad">—</dd></div>
+            <div><dt>Dónde</dt><dd data-f="lugar">—</dd></div>
+            <div><dt>Tipo</dt><dd data-f="tipo">—</dd></div>
+            <div><dt>Fecha</dt><dd data-f="fecha">—</dd></div>
+            <div><dt>Invitados</dt><dd data-f="invitados">—</dd></div>
+            <div><dt>Contacto</dt><dd data-f="contacto">—</dd></div>
+          </dl>
+          <p class="ficha__n">Sin compromiso. Te respondemos con la propuesta y el presupuesto.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTACTO ================= -->
+  <section class="sec sec--fin" id="contacto">
+    <div class="wrap">
+      <h2 class="stmt rv">Vení a conocer<br>el <em>salón</em>.</h2>
+      <p class="lead rv">Coordinamos una visita, te mostramos el espacio y armamos la propuesta juntos.</p>
+      <ul class="datos rv">
+        <li><span>Dirección</span><a href="#" data-cfg="maps">Av. Ejemplo 1234, Rosario</a></li>
+        <li><span>WhatsApp</span><a href="#" data-cfg="wa">+54 9 341 000 0000</a></li>
+        <li><span>Instagram</span><a href="#" data-cfg="ig">@grupomuta</a></li>
+        <li><span>Email</span><a href="#" data-cfg="mail">eventos@grupomuta.com</a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__mq" aria-hidden="true"><div><span>GRUPO MUTA</span><span>GRUPO MUTA</span><span>GRUPO MUTA</span><span>GRUPO MUTA</span></div></div>
+  <div class="wrap foot__in">
+    <p>MUTA Club · MUTA Eventos · MUTA Servicio de Barra</p>
+    <p>© <span id="year">2026</span> Grupo MUTA — Espacio, producción y barra para crear eventos a medida.</p>
+  </div>
+</footer>
+
+<a class="wa" id="waFloat" href="#" aria-label="Escribinos por WhatsApp">
+  <svg viewBox="0 0 24 24" width="23" height="23" aria-hidden="true" fill="currentColor">
+    <path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.84c0 1.74.46 3.44 1.32 4.94L2 22l5.36-1.4a9.8 9.8 0 0 0 4.68 1.2h.01c5.43 0 9.84-4.4 9.84-9.84C21.89 6.4 17.48 2 12.04 2Zm0 17.94h-.01a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.07.8.82-3-.2-.31a8.08 8.08 0 0 1-1.24-4.28c0-4.48 3.65-8.13 8.14-8.13 2.17 0 4.21.85 5.75 2.39a8.08 8.08 0 0 1 2.38 5.75c0 4.49-3.65 8.09-8.14 8.09Zm4.46-6.06c-.24-.12-1.45-.72-1.67-.8-.22-.08-.39-.12-.55.12-.16.24-.63.8-.77.96-.14.16-.28.18-.52.06-.24-.12-1.03-.38-1.97-1.21-.73-.65-1.22-1.45-1.36-1.69-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.33-.75-1.81-.2-.48-.4-.42-.55-.43h-.47c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.69 2.58 4.1 3.62.57.25 1.02.39 1.37.5.58.18 1.1.16 1.52.1.46-.07 1.45-.59 1.65-1.17.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28Z"/>
+  </svg>
+</a>
+
+<script src="main.js"></script>
+</body>
+</html>
