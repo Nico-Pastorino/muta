@@ -20,6 +20,10 @@ const waURL = (texto = "") =>
 
 const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/* Marca de que el JS arrancó: si algo falla, el CSS muestra todo
+   igual en vez de dejar la página en negro. */
+document.documentElement.classList.add("js");
+
 /* ---------------------------------------------------------
    2) Enlaces de contacto
    --------------------------------------------------------- */
@@ -92,19 +96,25 @@ if (!quieto) {
   grupos.forEach(escalonar);
 }
 
-/* Todo lo que entra al hacer scroll */
-const entradas = document.querySelectorAll(".rv, .stg, .scene__media, .shot");
+/* Todo lo que entra al hacer scroll.
+   Se mide a mano en cada scroll en vez de usar IntersectionObserver:
+   el observer no llegaba a disparar en algunos casos y las fotos
+   quedaban invisibles, que es el peor final posible. Acá, si algo
+   está arriba del borde de abajo de la pantalla, se muestra. */
+const entradas = [...document.querySelectorAll(".rv, .stg, .scene__media, .shot")];
+
+function revisarEntradas() {
+  const limite = innerHeight * 0.92;
+  for (let i = entradas.length - 1; i >= 0; i--) {
+    if (entradas[i].getBoundingClientRect().top < limite) {
+      entradas[i].classList.add("in");
+      entradas.splice(i, 1);            // ya entró: no se mira más
+    }
+  }
+}
+
 if (quieto) {
-  entradas.forEach((el) => el.classList.add("in"));
-} else {
-  const io = new IntersectionObserver((es, obs) => {
-    es.forEach((e) => {
-      if (!e.isIntersecting) return;
-      e.target.classList.add("in");
-      obs.unobserve(e.target);
-    });
-  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
-  entradas.forEach((el) => io.observe(el));
+  entradas.splice(0).forEach((el) => el.classList.add("in"));
 }
 
 /* ---------------------------------------------------------
@@ -179,28 +189,38 @@ const parallax = [...document.querySelectorAll("[data-parallax]")];
 let pendiente = false;
 
 function pintar() {
-  parallax.forEach((el) => {
-    const r = el.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > innerHeight) return;
-    const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-    el.style.setProperty("--photo-y", `${Math.max(-70, Math.min(2, -38 - p * 30))}px`);
-  });
+  revisarEntradas();
+
+  if (!quieto) {
+    parallax.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+      el.style.setProperty("--photo-y", `${Math.max(-70, Math.min(2, -38 - p * 30))}px`);
+    });
+  }
   pendiente = false;
 }
 
-if (!quieto) {
-  addEventListener("scroll", () => {
-    mbtnFloat.classList.toggle("is-on", scrollY > 400);
-    if (pendiente) return;
-    pendiente = true;
-    requestAnimationFrame(pintar);
-  }, { passive: true });
-  pintar();
-} else {
-  addEventListener("scroll", () => {
-    mbtnFloat.classList.toggle("is-on", scrollY > 400);
-  }, { passive: true });
+function alScrollear() {
+  // Mostrar lo que entró se hace acá mismo, sin esperar a un frame:
+  // es lo único que no puede fallar. El parallax sí puede esperar.
+  revisarEntradas();
+  mbtnFloat.classList.toggle("is-on", scrollY > 400);
+  if (pendiente) return;
+  pendiente = true;
+  requestAnimationFrame(pintar);
 }
+
+addEventListener("scroll", alScrollear, { passive: true });
+addEventListener("resize", alScrollear, { passive: true });
+addEventListener("load", revisarEntradas);
+pintar();
+
+/* Las fotos cargan tarde y mueven todo: durante los primeros segundos
+   se vuelve a revisar cada tanto, por si algo quedó atrás. */
+const vigilar = setInterval(revisarEntradas, 400);
+setTimeout(() => clearInterval(vigilar), 8000);
 
 /* Arrastre del lookbook con mouse */
 const lookbook = document.querySelector(".lookbook");

@@ -686,6 +686,20 @@ body.go .rise{
   .trio{ gap:14px; }
 }
 
+/* Red de seguridad: si el JS no corre, nada se esconde.
+   Sin esto, un error de script deja la página entera invisible. */
+html:not(.js) .rv,
+html:not(.js) .rise,
+html:not(.js) .stg > *,
+html:not(.js) .menu__nav a,
+html:not(.js) .top .badge,
+html:not(.js) .top__right > *{ opacity:1; transform:none; }
+html:not(.js) .shot,
+html:not(.js) .scene__media{ clip-path:none; --zoom:1.02; }
+html:not(.js) .split .w > i{ transform:none; }
+html:not(.js) .hero__media img{ transform:scale(1.02); }
+html:not(.js) .intro{ display:none; }
+
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   *,*::before,*::after{ animation:none !important; transition-duration:.01ms !important; }
