@@ -1,5 +1,5 @@
 /* =========================================================
-   GRUPO MUTA — EXPERIENCIA EDITORIAL
+   GRUPO MUTA — OPCIÓN C
    ========================================================= */
 
 /* ---------------------------------------------------------
@@ -20,12 +20,6 @@ const waURL = (texto = "") =>
 
 const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* Línea de progreso: convierte el recorrido de la página en una secuencia. */
-const progress = document.createElement("div");
-progress.className = "progress";
-progress.setAttribute("aria-hidden", "true");
-document.body.prepend(progress);
-
 /* ---------------------------------------------------------
    2) Enlaces de contacto
    --------------------------------------------------------- */
@@ -41,8 +35,7 @@ document.querySelectorAll("[data-cfg]").forEach((el) => {
 
   if (!dato) return;
   el.href = dato.href;
-  // En la lista de contacto se muestra el dato; en el menú queda la etiqueta
-  if (el.closest(".datos")) el.textContent = dato.txt;
+  if (el.closest(".datos")) el.textContent = dato.txt;      // en el menú queda la etiqueta
   if (dato.href.startsWith("http")) { el.target = "_blank"; el.rel = "noopener"; }
 });
 
@@ -54,210 +47,8 @@ waFloat.rel = "noopener";
 document.getElementById("year").textContent = new Date().getFullYear();
 
 /* ---------------------------------------------------------
-   3) Menú
+   3) Titulares partidos en palabras + listas escalonadas
    --------------------------------------------------------- */
-const menu = document.getElementById("menu");
-const mbtnFloat = document.getElementById("mbtnFloat");
-const abridores = document.querySelectorAll("[data-menu-open]");
-
-function abrirMenu(abrir) {
-  menu.hidden = !abrir;
-  document.body.classList.toggle("lock", abrir);
-  abridores.forEach((b) => b.setAttribute("aria-expanded", String(abrir)));
-  // La clase llega un frame después para que los links puedan entrar animados
-  if (abrir) {
-    requestAnimationFrame(() => menu.classList.add("open"));
-    menu.querySelector("[data-menu-close]").focus();
-  } else {
-    menu.classList.remove("open");
-  }
-}
-
-abridores.forEach((b) => b.addEventListener("click", () => abrirMenu(menu.hidden)));
-menu.addEventListener("click", (e) => {
-  // Cierra con el botón, al elegir una sección o tocando el fondo
-  if (e.target.closest("[data-menu-close]") || e.target.closest("a") || e.target === menu) {
-    abrirMenu(false);
-  }
-});
-addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) abrirMenu(false); });
-
-addEventListener("scroll", () => {
-  mbtnFloat.classList.toggle("is-on", scrollY > 400);
-}, { passive: true });
-
-/* Progreso, parallax de fotos y desplazamiento suave del hero en un solo frame. */
-const parallax = [...document.querySelectorAll("[data-parallax]")];
-const heroMedia = document.querySelector(".hero__media");
-let scrollTick = false;
-
-function pintarScroll() {
-  const max = document.documentElement.scrollHeight - innerHeight;
-  progress.style.setProperty("--scroll", max > 0 ? Math.min(scrollY / max, 1) : 0);
-
-  if (!quieto) {
-    if (heroMedia) heroMedia.style.transform = `translate3d(0,${Math.min(scrollY * .16, 100)}px,0)`;
-    parallax.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > innerHeight) return;
-      const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
-      el.style.setProperty("--photo-y", `${Math.max(-62, Math.min(2, -32 - p * 28))}px`);
-    });
-  }
-  scrollTick = false;
-}
-
-addEventListener("scroll", () => {
-  if (scrollTick) return;
-  scrollTick = true;
-  requestAnimationFrame(pintarScroll);
-}, { passive: true });
-pintarScroll();
-
-/* Arrastre horizontal del lookbook con mouse, conservando el scroll táctil nativo. */
-const lookbook = document.querySelector(".lookbook");
-if (lookbook && matchMedia("(pointer:fine)").matches) {
-  let down = false, startX = 0, startScroll = 0;
-  lookbook.addEventListener("pointerdown", (e) => {
-    down = true; startX = e.clientX; startScroll = lookbook.scrollLeft;
-    lookbook.setPointerCapture(e.pointerId);
-  });
-  lookbook.addEventListener("pointermove", (e) => {
-    if (down) lookbook.scrollLeft = startScroll - (e.clientX - startX) * 1.15;
-  });
-  lookbook.addEventListener("pointerup", () => { down = false; });
-  lookbook.addEventListener("pointercancel", () => { down = false; });
-}
-
-/* ---------------------------------------------------------
-   4) Luz que sigue al cursor + color de la sección activa
-   --------------------------------------------------------- */
-const spot = document.getElementById("spot");
-
-if (matchMedia("(pointer:fine)").matches && !quieto) {
-  let px = 0, py = 0, pendiente = false;
-  addEventListener("pointermove", (e) => {
-    px = e.clientX; py = e.clientY;
-    if (pendiente) return;
-    pendiente = true;
-    requestAnimationFrame(() => {
-      spot.style.setProperty("--mx", `${px}px`);
-      spot.style.setProperty("--my", `${py}px`);
-      pendiente = false;
-    });
-  }, { passive: true });
-}
-
-const conCue = document.querySelectorAll("[style*='--cue']");
-const cueSpy = new IntersectionObserver((es) => {
-  es.forEach((e) => {
-    if (!e.isIntersecting) return;
-    const c = getComputedStyle(e.target).getPropertyValue("--cue");
-    if (c) spot.style.setProperty("--cue", c.trim());
-  });
-}, { rootMargin: "-40% 0px -40% 0px" });
-conCue.forEach((s) => { if (s.tagName === "SECTION") cueSpy.observe(s); });
-
-/* ---------------------------------------------------------
-   5) Hero: bola de espejos + haces de luz (canvas)
-   --------------------------------------------------------- */
-const cv = document.getElementById("lights");
-const ctx = cv.getContext("2d");
-const PALETA = ["#FF1D6C", "#2E5BFF", "#E8D9A8", "#FFFFFF"];
-
-let W = 0, H = 0, puntos = [], activo = true;
-
-function medir() {
-  const dpr = Math.min(devicePixelRatio || 1, 2);
-  W = cv.clientWidth; H = cv.clientHeight;
-  cv.width = Math.round(W * dpr);
-  cv.height = Math.round(H * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  sembrar();
-}
-
-/* Cada punto es un reflejo de la bola: gira alrededor del centro
-   en una órbita propia, como los destellos sobre la pared. */
-function sembrar() {
-  const n = W < 700 ? 55 : 110;
-  puntos = Array.from({ length: n }, () => ({
-    ang: Math.random() * Math.PI * 2,
-    rx: (0.25 + Math.random() * 0.75) * W * 0.62,
-    ry: (0.2 + Math.random() * 0.9) * H * 0.55,
-    dy: (Math.random() - 0.5) * H * 0.5,
-    vel: (0.00018 + Math.random() * 0.00042) * (Math.random() < 0.5 ? -1 : 1),
-    r: 1 + Math.random() * 3.4,
-    col: PALETA[(Math.random() * PALETA.length) | 0],
-    fase: Math.random() * Math.PI * 2,
-  }));
-}
-
-function dibujar(t) {
-  ctx.clearRect(0, 0, W, H);
-  const cx = W * 0.52, cy = H * 0.42;
-
-  // Haces de luz de fondo
-  ctx.globalCompositeOperation = "lighter";
-  const haces = [
-    { c: "#FF1D6C", x: cx - W * 0.3 + Math.sin(t * 0.00013) * W * 0.1, y: cy - H * 0.2, r: W * 0.42, a: 0.5 },
-    { c: "#2E5BFF", x: cx + W * 0.32 + Math.cos(t * 0.00011) * W * 0.12, y: cy + H * 0.05, r: W * 0.46, a: 0.45 },
-    { c: "#E8D9A8", x: cx + Math.sin(t * 0.00007) * W * 0.2, y: cy + H * 0.42, r: W * 0.3, a: 0.16 },
-  ];
-  haces.forEach((h) => {
-    const g = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, h.r);
-    g.addColorStop(0, `${h.c}${Math.round(h.a * 90).toString(16).padStart(2, "0")}`);
-    g.addColorStop(1, `${h.c}00`);
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, W, H);
-  });
-
-  // Destellos de la bola de espejos
-  puntos.forEach((p) => {
-    const a = p.ang + t * p.vel;
-    const x = cx + Math.cos(a) * p.rx;
-    const y = cy + Math.sin(a) * p.ry * 0.42 + p.dy;
-    const brillo = 0.25 + 0.75 * Math.abs(Math.sin(a * 0.5 + p.fase));
-    const r = p.r * (0.6 + brillo * 0.7);
-
-    const g = ctx.createRadialGradient(x, y, 0, x, y, r * 5);
-    g.addColorStop(0, p.col);
-    g.addColorStop(0.22, `${p.col}66`);
-    g.addColorStop(1, `${p.col}00`);
-    ctx.globalAlpha = brillo * 0.6;
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(x, y, r * 5, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  ctx.globalAlpha = 1;
-  ctx.globalCompositeOperation = "source-over";
-}
-
-function bucle(t) {
-  if (activo) dibujar(t);
-  requestAnimationFrame(bucle);
-}
-
-medir();
-addEventListener("resize", medir);
-
-if (quieto) {
-  dibujar(0);
-} else {
-  requestAnimationFrame(bucle);
-  // No gastar batería cuando el hero no está a la vista
-  new IntersectionObserver(([e]) => { activo = e.isIntersecting; })
-    .observe(document.querySelector(".hero"));
-}
-
-/* ---------------------------------------------------------
-   6) Aparición al scroll
-   --------------------------------------------------------- */
-
-/* 6.a) Titulares que suben palabra por palabra.
-   Cada palabra viaja dentro de su propia máscara; el índice --i
-   hace que arranquen una atrás de otra. */
 function partir(el) {
   if (el.classList.contains("split")) return;
 
@@ -278,7 +69,7 @@ function partir(el) {
         });
         n.replaceWith(frag);
       } else if (n.nodeType === 1 && n.tagName !== "BR") {
-        recorrer(n);   // conserva los <em> y su tipografía
+        recorrer(n);
       }
     });
   };
@@ -288,116 +79,146 @@ function partir(el) {
   el.classList.add("split");
 }
 
-/* 6.b) Listas que entran escalonadas */
 function escalonar(grupo) {
-  grupo.classList.remove("rv");
   grupo.classList.add("stg");
   [...grupo.children].forEach((hijo, i) => hijo.style.setProperty("--i", i));
 }
 
-const titulares = [...document.querySelectorAll(".hero__t, .stmt, .big")];
-const grupos = [...document.querySelectorAll(".chips, .listado, .datos, .opts")];
+const titulares = [...document.querySelectorAll(".hero__t, .scene__t, .stmt, .big")];
+const grupos = [...document.querySelectorAll(".tags, .modos, .datos, .niveles, .opts")];
 
 if (!quieto) {
   titulares.forEach(partir);
   grupos.forEach(escalonar);
 }
 
-const entradas = document.querySelectorAll(".rv, .stg");
+/* Todo lo que entra al hacer scroll */
+const entradas = document.querySelectorAll(".rv, .stg, .scene__media, .shot");
 if (quieto) {
   entradas.forEach((el) => el.classList.add("in"));
 } else {
   const io = new IntersectionObserver((es, obs) => {
-    es.forEach((e, i) => {
+    es.forEach((e) => {
       if (!e.isIntersecting) return;
-      e.target.style.transitionDelay = `${Math.min(i * 80, 320)}ms`;
       e.target.classList.add("in");
       obs.unobserve(e.target);
     });
-  }, { rootMargin: "0px 0px -10% 0px", threshold: 0.06 });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.05 });
   entradas.forEach((el) => io.observe(el));
-
-  // El titular del hero no espera al scroll: entra apenas cargan las fuentes
-  const heroT = document.querySelector(".hero__t");
-  const arrancarHero = () => requestAnimationFrame(() => heroT.classList.add("in"));
-  if (document.fonts?.ready) document.fonts.ready.then(arrancarHero);
-  else arrancarHero();
-}
-
-/* 6.c) La foto de cada unidad asoma junto al cursor */
-const conPeek = document.querySelectorAll("[data-peek]");
-if (conPeek.length && matchMedia("(pointer:fine)").matches && !quieto) {
-  const peek = document.createElement("div");
-  peek.className = "peek";
-  peek.setAttribute("aria-hidden", "true");
-  const foto = document.createElement("img");
-  foto.alt = "";
-  peek.append(foto);
-  document.body.append(peek);
-
-  let x = 0, y = 0, cx = 0, cy = 0, siguiendo = false;
-
-  const seguir = () => {
-    cx += (x - cx) * 0.13;
-    cy += (y - cy) * 0.13;
-    peek.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-    if (siguiendo) requestAnimationFrame(seguir);
-  };
-
-  conPeek.forEach((el) => {
-    el.addEventListener("pointerenter", (e) => {
-      if (e.pointerType !== "mouse") return;
-      foto.src = el.dataset.peek;
-      x = cx = e.clientX;
-      y = cy = e.clientY;
-      peek.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      peek.classList.add("on");
-      if (!siguiendo) { siguiendo = true; requestAnimationFrame(seguir); }
-    });
-    el.addEventListener("pointermove", (e) => { x = e.clientX; y = e.clientY; });
-    el.addEventListener("pointerleave", () => {
-      peek.classList.remove("on");
-      siguiendo = false;
-    });
-  });
 }
 
 /* ---------------------------------------------------------
-   7) Consola de niveles (MUTA Club)
+   4) Apertura
+   La cortina se va sola, o antes si tocás / scrolleás.
+   Se muestra una vez por visita.
    --------------------------------------------------------- */
-const tabs = [...document.querySelectorAll(".lvls button")];
-const feats = [...document.querySelectorAll("#feats li")];
-const lvlDesc = document.getElementById("lvlDesc");
+const intro = document.getElementById("intro");
+const heroT = document.querySelector(".hero__t");
 
-const DESC = {
-  1: "El espacio en exclusiva durante el horario contratado, listo para que armes tu evento.",
-  2: "El espacio funcionando como fiesta: DJ, técnica con operador, barra y tapeo.",
-  3: "Propuesta integral con coordinación de una party planner de punta a punta.",
+const yaVisto = () => {
+  try { return sessionStorage.getItem("muta-intro") === "1"; } catch { return false; }
+};
+const marcarVisto = () => {
+  try { sessionStorage.setItem("muta-intro", "1"); } catch { /* modo privado */ }
 };
 
-function nivel(n) {
-  tabs.forEach((t) => t.setAttribute("aria-selected", String(+t.dataset.lvl === n)));
-  feats.forEach((li, i) => {
-    const prende = +li.dataset.min <= n;
-    // Escalonado: las nuevas se encienden una atrás de otra
-    li.style.transitionDelay = prende ? `${Math.min(i * 45, 400)}ms` : "0ms";
-    li.classList.toggle("on", prende);
-  });
-  lvlDesc.textContent = DESC[n];
+function abrirTelon() {
+  if (!intro.isConnected) return;
+  document.body.classList.remove("lock");
+  document.body.classList.add("go");
+  heroT.classList.add("in");
+  intro.classList.add("up");
+  intro.addEventListener("transitionend", () => intro.remove(), { once: true });
+  setTimeout(() => intro.remove(), 2200);   // por si la transición no llega
 }
 
-tabs.forEach((t) => {
-  t.addEventListener("click", () => nivel(+t.dataset.lvl));
-  t.addEventListener("keydown", (e) => {
-    const i = tabs.indexOf(t);
-    if (e.key === "ArrowDown" || e.key === "ArrowRight") tabs[(i + 1) % tabs.length].focus();
-    if (e.key === "ArrowUp" || e.key === "ArrowLeft") tabs[(i - 1 + tabs.length) % tabs.length].focus();
-  });
-});
-nivel(1);
+if (quieto || yaVisto()) {
+  intro.remove();
+  document.body.classList.add("go");
+  heroT.classList.add("in");
+} else {
+  marcarVisto();
+  document.body.classList.add("lock");
+  const solo = setTimeout(abrirTelon, 1400);
+  ["pointerdown", "keydown", "wheel", "touchstart"].forEach((ev) =>
+    addEventListener(ev, () => { clearTimeout(solo); abrirTelon(); }, { once: true, passive: true })
+  );
+}
 
 /* ---------------------------------------------------------
-   8) Armá tu evento: 3 pasos + ficha en vivo + WhatsApp
+   5) Menú
+   --------------------------------------------------------- */
+const menu = document.getElementById("menu");
+const mbtnFloat = document.getElementById("mbtnFloat");
+const abridores = document.querySelectorAll("[data-menu-open]");
+
+function abrirMenu(abrir) {
+  menu.hidden = !abrir;
+  document.body.classList.toggle("lock", abrir);
+  abridores.forEach((b) => b.setAttribute("aria-expanded", String(abrir)));
+  if (abrir) {
+    requestAnimationFrame(() => menu.classList.add("open"));
+    menu.querySelector("[data-menu-close]").focus();
+  } else {
+    menu.classList.remove("open");
+  }
+}
+
+abridores.forEach((b) => b.addEventListener("click", () => abrirMenu(menu.hidden)));
+menu.addEventListener("click", (e) => {
+  if (e.target.closest("[data-menu-close]") || e.target.closest("a") || e.target === menu) {
+    abrirMenu(false);
+  }
+});
+addEventListener("keydown", (e) => { if (e.key === "Escape" && !menu.hidden) abrirMenu(false); });
+
+/* ---------------------------------------------------------
+   6) Parallax de las fotos (scroll nativo, sin trucos)
+   --------------------------------------------------------- */
+const parallax = [...document.querySelectorAll("[data-parallax]")];
+let pendiente = false;
+
+function pintar() {
+  parallax.forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > innerHeight) return;
+    const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+    el.style.setProperty("--photo-y", `${Math.max(-70, Math.min(2, -38 - p * 30))}px`);
+  });
+  pendiente = false;
+}
+
+if (!quieto) {
+  addEventListener("scroll", () => {
+    mbtnFloat.classList.toggle("is-on", scrollY > 400);
+    if (pendiente) return;
+    pendiente = true;
+    requestAnimationFrame(pintar);
+  }, { passive: true });
+  pintar();
+} else {
+  addEventListener("scroll", () => {
+    mbtnFloat.classList.toggle("is-on", scrollY > 400);
+  }, { passive: true });
+}
+
+/* Arrastre del lookbook con mouse */
+const lookbook = document.querySelector(".lookbook");
+if (lookbook && matchMedia("(pointer:fine)").matches) {
+  let down = false, x0 = 0, s0 = 0;
+  lookbook.addEventListener("pointerdown", (e) => {
+    down = true; x0 = e.clientX; s0 = lookbook.scrollLeft;
+    lookbook.setPointerCapture(e.pointerId);
+  });
+  lookbook.addEventListener("pointermove", (e) => {
+    if (down) lookbook.scrollLeft = s0 - (e.clientX - x0) * 1.15;
+  });
+  lookbook.addEventListener("pointerup", () => { down = false; });
+  lookbook.addEventListener("pointercancel", () => { down = false; });
+}
+
+/* ---------------------------------------------------------
+   7) Armá tu evento
    --------------------------------------------------------- */
 const wiz = document.getElementById("wiz");
 const pasos = [...wiz.querySelectorAll(".step")];
@@ -416,16 +237,15 @@ function verPaso(n) {
   btnPrev.hidden = n === 1;
   btnNext.hidden = n === pasos.length;
   btnSend.hidden = n !== pasos.length;
-  wizStep.textContent = `Paso ${n} de ${pasos.length}`;
+  wizStep.textContent = `${n} de ${pasos.length}`;
   wizFill.style.width = `${(n / pasos.length) * 100}%`;
   wizMsg.textContent = "";
-  // Las opciones del paso que se muestra entran escalonadas
   pasos[n - 1].querySelectorAll(".stg").forEach((g) => g.classList.add("in"));
 }
 
 btnNext.addEventListener("click", () => {
   if (paso === 1 && !wiz.querySelector("input[name='unidad']:checked")) {
-    wizMsg.textContent = "Elegí al menos una cosa que necesites.";
+    wizMsg.textContent = "Elegí al menos una cosa.";
     return;
   }
   verPaso(Math.min(paso + 1, pasos.length));
@@ -444,7 +264,6 @@ function datos() {
     invitados: d.get("invitados") || "",
     nombre: (d.get("nombre") || "").trim(),
     tel: (d.get("tel") || "").trim(),
-    email: (d.get("email") || "").trim(),
     mensaje: (d.get("mensaje") || "").trim(),
   };
 }
@@ -457,7 +276,6 @@ function pintarFicha() {
     tipo: v.tipo,
     fecha: v.fecha,
     invitados: v.invitados ? `${v.invitados} personas` : "",
-    contacto: [v.nombre, v.tel].filter(Boolean).join(" · "),
   };
   Object.entries(campos).forEach(([k, val]) => {
     const dd = document.querySelector(`[data-f="${k}"]`);
@@ -476,11 +294,10 @@ function mensaje() {
     "",
     `Nombre: ${v.nombre}`,
     `Contacto: ${v.tel}`,
-    v.email ? `Email: ${v.email}` : "",
     "",
     `Necesita: ${v.unidad || "a definir"}`,
     `Dónde: ${v.lugar || "a definir"}`,
-    `Tipo de evento: ${v.tipo || "a definir"}`,
+    `Qué festeja: ${v.tipo || "a definir"}`,
     `Fecha: ${v.fecha || "a definir"}`,
     `Invitados: ${v.invitados || "a definir"}`,
     v.mensaje ? `\nComentarios: ${v.mensaje}` : "",
@@ -491,11 +308,11 @@ wiz.addEventListener("submit", (e) => {
   e.preventDefault();
   const v = datos();
   if (!v.nombre || !v.tel) {
-    wizMsg.textContent = "Completá tu nombre y tu WhatsApp para poder responderte.";
+    wizMsg.textContent = "Completá tu nombre y tu WhatsApp.";
     (v.nombre ? wiz.tel : wiz.nombre).focus();
     return;
   }
-  wizMsg.textContent = "Abriendo WhatsApp con tu pedido…";
+  wizMsg.textContent = "Abriendo WhatsApp…";
   window.open(waURL(mensaje()), "_blank", "noopener");
 });
 
